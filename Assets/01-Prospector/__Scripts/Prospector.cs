@@ -96,8 +96,52 @@ public class Prospector : MonoBehaviour {
 			tableau.Add(cp); // add CardProspector to the List<> tableau
 		}
 
+		// set which cards are hiding others
+		foreach (CardProspector tCP in tableau)
+		{
+			foreach (int hid in tCP.slotDef.hiddenBy)
+			{
+				cp = FindCardByLayoutID(hid);
+				tCP.hiddenBy.Add(cp);
+			}
+		}
+
 		MoveToTarget(Draw());
 		UpdateDrawPile();
+	}
+
+	// convert from layoutID int to the CardProspector with that ID
+	CardProspector FindCardByLayoutID(int layoutID)
+	{
+		foreach (CardProspector tCP in tableau)
+		{
+			// search through all cards in tableau List<>
+			if (tCP.layoutID == layoutID)
+			{
+				// if card has same ID, return it
+				return tCP;
+			}
+		}
+		// if not found, return null
+		return null;
+	}
+
+	// this turns cards in the Mind face-up or face-down
+	void SetTableauFaces()
+	{
+		foreach(CardProspector cd in tableau)
+		{
+			bool faceUp = true; //assume card will be face-up
+			foreach(CardProspector cover in cd.hiddenBy)
+			{
+				// if either of the covering cards are in the tableau
+				if (cover.state == eCardState.tableau)
+				{
+					faceUp = false; // then this card is face-down
+				}
+			}
+			cd.faceUp = faceUp; // set the value on the card
+		}
 	}
 
 	void MoveToDiscard(CardProspector cd)
@@ -196,6 +240,7 @@ public class Prospector : MonoBehaviour {
 				// if we got here then its a valid card
 				tableau.Remove(cd);
 				MoveToTarget(cd);
+				SetTableauFaces();
 				break;
 		}
 	}
