@@ -15,6 +15,8 @@ public class Card : MonoBehaviour {
 	public GameObject back;  // back of card;
 	public CardDefinition def;  // from DeckXML.xml		
 
+	// list of the SpriteRenderer Components of this GameoObject and its children
+	public SpriteRenderer[] spriteRenderers;
 
 	public bool faceUp {
 		get {
@@ -26,15 +28,60 @@ public class Card : MonoBehaviour {
 		}
 	}
 
-
 	// Use this for initialization
 	void Start () {
-	
+		SetSortOrder(0); //ensures that the card starts properly depth sorted
+	}
+
+	// if spriteRenderers is not yet defined, this function defines it
+	public void PopulateSpriteRenderers()
+	{
+		// if spriteRenderers is null or empty
+		if (spriteRenderers == null || spriteRenderers.Length == 0)
+		{
+			spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+		}
+	}
+
+	public void SetSortingLayerName(string tSLN)
+	{
+		PopulateSpriteRenderers();
+
+		foreach(SpriteRenderer tSR in spriteRenderers)
+		{
+			tSR.sortingLayerName = tSLN;
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
+	// sets the sortingOrder of all SpriteRenderer Components
+	public void SetSortOrder(int sOrd)
+	{
+		PopulateSpriteRenderers();
+
+		// iterate through all the spriteRenderers as tSR
+		foreach (SpriteRenderer tSR in spriteRenderers)
+		{
+			if (tSR.gameObject == this.gameObject)
+			{
+				// if the gameObject is this.gameObject, it's the background
+				tSR.sortingOrder = sOrd;
+				continue;
+			}
+			// each child of this GameObject are named
+			// switch based on the names
+			switch (tSR.gameObject.name)
+			{
+				case "back":
+					// set it to highest layer to cover other sprites
+					tSR.sortingOrder = sOrd + 2;
+					break;
+
+				case "face":
+				default:
+					tSR.sortingOrder = sOrd + 1;
+					break;
+			}
+		}
 	}
 } // class Card
 
