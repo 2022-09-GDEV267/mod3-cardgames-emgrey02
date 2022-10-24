@@ -83,6 +83,12 @@ public class Card : MonoBehaviour {
 			}
 		}
 	}
+
+	virtual public void OnMouseUpAsButton()
+	{
+		print(name);
+	}
+
 } // class Card
 
 [System.Serializable]

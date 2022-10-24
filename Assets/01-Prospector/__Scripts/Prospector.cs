@@ -95,5 +95,92 @@ public class Prospector : MonoBehaviour {
 			cp.SetSortingLayerName(tSD.layerName);
 			tableau.Add(cp); // add CardProspector to the List<> tableau
 		}
+
+		MoveToTarget(Draw());
+		UpdateDrawPile();
+	}
+
+	void MoveToDiscard(CardProspector cd)
+	{
+		//set state of card to discard
+		cd.state = eCardState.discard;
+		discardPile.Add(cd);
+		cd.transform.parent = layoutAnchor;
+
+		// position this card on the discardPile
+		cd.transform.localPosition = new Vector3(
+			layout.multiplier.x * layout.discardPile.x,
+			layout.multiplier.y * layout.discardPile.y,
+			-layout.discardPile.layerID + 0.5f);
+		cd.faceUp = true;
+
+		// place it on top of the pile for depth sorting
+		cd.SetSortingLayerName(layout.discardPile.layerName);
+		cd.SetSortOrder(-100 + discardPile.Count);
+	}
+
+	void MoveToTarget(CardProspector cd)
+	{
+		// if there is currently a target card, move it to discardPile
+		if (target != null) MoveToDiscard(target);
+		target = cd; // cd is new target
+		cd.state = eCardState.target;
+		cd.transform.parent = layoutAnchor;
+
+		// move to target position
+		cd.transform.localPosition = new Vector3(
+			layout.multiplier.x * layout.discardPile.x,
+			layout.multiplier.y * layout.discardPile.y,
+			-layout.discardPile.layerID);
+		cd.faceUp = true;
+
+		//set the depth sorting
+		cd.SetSortingLayerName(layout.discardPile.layerName);
+		cd.SetSortOrder(0);
+
+	}
+
+	// arranges all the cards of the drawPile to show how many are left
+	void UpdateDrawPile()
+	{
+		CardProspector cd;
+		// go through all the cards of the drawPile
+		for (int i = 0; i < drawPile.Count; i++)
+		{
+			cd = drawPile[i];
+			cd.transform.parent = layoutAnchor;
+
+			// position it correctly with the layout.drawPile.stagger
+			Vector2 dpStagger = layout.drawPile.stagger;
+			cd.transform.localPosition = new Vector3(
+				layout.multiplier.x * (layout.drawPile.x + i*dpStagger.x),
+				layout.multiplier.y * (layout.drawPile.y + i*dpStagger.y),
+				-layout.drawPile.layerID + 0.1f * i);
+			cd.faceUp = false;
+			cd.state = eCardState.drawpile;
+
+			// set depth sorting
+			cd.SetSortingLayerName(layout.drawPile.layerName);
+			cd.SetSortOrder(-10 * i);
+		}
+	}
+
+	public void CardClicked(CardProspector cd)
+	{
+		// the reaction is determined by the state of the clicked card
+		switch(cd.state)
+		{
+			case eCardState.target:
+				break;
+
+			case eCardState.drawpile:
+				MoveToDiscard(target);
+				MoveToTarget(Draw());
+				UpdateDrawPile();
+				break;
+
+			case eCardState.tableau:
+				break;
+		}
 	}
 }
