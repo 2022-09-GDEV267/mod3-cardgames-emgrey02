@@ -180,7 +180,43 @@ public class Prospector : MonoBehaviour {
 				break;
 
 			case eCardState.tableau:
+				bool validMatch = true;
+				if (!cd.faceUp)
+				{
+					// if card is face-down, it's not valid
+					validMatch = false;
+				}
+				if (!AdjacentRank(cd, target))
+				{
+					// if it's not an adjacent rank, it's not valid
+					validMatch = false;
+				}
+				if (!validMatch) return; // return if not valid
+
+				// if we got here then its a valid card
+				tableau.Remove(cd);
+				MoveToTarget(cd);
 				break;
 		}
+	}
+
+	// return true if the two cards are adjacent in rank
+	public bool AdjacentRank(CardProspector c0, CardProspector c1)
+	{
+		// if either card is face-down, it's not adjacent.
+		if (!c0.faceUp || !c1.faceUp) return false;
+
+		// if they are 1 apart, they are adjacent
+		if (Mathf.Abs(c0.rank - c1.rank) == 1)
+		{
+			return true;
+		}
+
+		// if one is Ace and the other King, they are adjacent
+		if (c0.rank == 1 && c1.rank == 13) return true;
+		if (c0.rank == 13 && c1.rank == 1) return true;
+
+		// otherwise, return false
+		return false;
 	}
 }
