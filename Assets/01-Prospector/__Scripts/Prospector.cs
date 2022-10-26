@@ -19,8 +19,14 @@ public class Prospector : MonoBehaviour {
 	public Vector2 fsPosRun = new Vector2(0.5f, 0.75f);
 	public Vector2 fsPosMid2 = new Vector2(0.4f, 1.0f);
 	public Vector2 fsPosEnd = new Vector2(0.5f, 0.95f);
+	public float reloadDelay = 2f;
+	public Text gameOverText, roundResultText, highScoreText;
+    public Sprite cardBack;
+	public Sprite cardBackGold;
+    public Sprite cardFront;
+	public Sprite cardFrontGold;
 
-	[Header("Set Dynamically")]
+    [Header("Set Dynamically")]
 	public Deck	deck;
 	public Layout layout;
 	public List<CardProspector> drawPile;
@@ -32,12 +38,47 @@ public class Prospector : MonoBehaviour {
 
 	void Awake(){
 		S = this;
+		SetUpUITexts();
+	}
+
+	void SetUpUITexts()
+	{
+		// set up the higScore UI Text
+		GameObject go = GameObject.Find("HighScore");
+		if (go != null)
+		{
+			highScoreText = go.GetComponent<Text>();
+		}
+		int highScore = ScoreManager.HIGH_SCORE;
+		string hScore = "High Score: " + Utils.AddCommasToNumber(highScore);
+		go.GetComponent<Text>().text = hScore;
+
+		// set up the UI Texts that show at the end of the round
+		go = GameObject.Find("GameOver");
+		if (go != null)
+		{
+			gameOverText = go.GetComponent<Text>();
+		}
+
+		go = GameObject.Find("RoundResult");
+		if (go != null)
+		{
+			roundResultText = go.GetComponent<Text>();
+		}
+
+		ShowResultsUI(false);
+	}
+
+	void ShowResultsUI(bool show)
+	{
+		gameOverText.gameObject.SetActive(show);
+		roundResultText.gameObject.SetActive(show);
 	}
 
 	void Start() {
 		Scoreboard.S.score = ScoreManager.SCORE;
 		deck = GetComponent<Deck> ();
-		deck.InitDeck (deckXML.text);
+		deck.InitDeck(deckXML.text);
 		Deck.Shuffle(ref deck.cards);
 
 		layout = GetComponent<Layout> ();
@@ -111,7 +152,7 @@ public class Prospector : MonoBehaviour {
 				tCP.hiddenBy.Add(cp);
 			}
 		}
-
+		SetGoldCards();
 		MoveToTarget(Draw());
 		UpdateDrawPile();
 	}
@@ -132,7 +173,7 @@ public class Prospector : MonoBehaviour {
 		return null;
 	}
 
-	// this turns cards in the Mind face-up or face-down
+	// this turns cards in the Mine face-up or face-down
 	void SetTableauFaces()
 	{
 		foreach(CardProspector cd in tableau)
@@ -148,6 +189,20 @@ public class Prospector : MonoBehaviour {
 			}
 			cd.faceUp = faceUp; // set the value on the card
 		}
+		
+	}
+
+	void SetGoldCards()
+	{
+		foreach(CardProspector cd in tableau)
+		{
+            bool isGold = Random.value < 0.1f; // 10% chance this is a gold card
+			GameObject card = cd.gameObject;
+			card.GetComponent<SpriteRenderer>().sprite = isGold ? cardFrontGold : cardFront;
+			GameObject cardBackgo = card.transform.GetChild(card.transform.childCount - 1).gameObject;
+            cardBackgo.GetComponent<SpriteRenderer>().sprite = isGold ? cardBackGold : cardBack;
+            cd.isGold = isGold;
+        }
 	}
 
 	void MoveToDiscard(CardProspector cd)
@@ -217,6 +272,7 @@ public class Prospector : MonoBehaviour {
 
 	public void CardClicked(CardProspector cd)
 	{
+		bool isGold = cd.isGold;
 		// the reaction is determined by the state of the clicked card
 		switch(cd.state)
 		{
@@ -249,7 +305,13 @@ public class Prospector : MonoBehaviour {
 				tableau.Remove(cd);
 				MoveToTarget(cd);
 				SetTableauFaces();
-				ScoreManager.EVENT(eScoreEvent.mine);
+				if (isGold)
+				{
+					ScoreManager.EVENT(eScoreEvent.mineGold);
+				} else
+				{
+					ScoreManager.EVENT(eScoreEvent.mine);
+				}
 				FloatingScoreHandler(eScoreEvent.mine);
 				break;
 		}
@@ -285,19 +347,36 @@ public class Prospector : MonoBehaviour {
 	// called when game is over
 	void GameOver(bool won)
 	{
+		int score = ScoreManager.SCORE;
+		if (fsRun != null) score += fsRun.score;
 		if (won)
 		{
-			//print("Game Over. You won! :)");
+			gameOverText.text = "Round Over";
+			roundResultText.text = "You won this round!\nRound Score: " + score;
+			ShowResultsUI(true);
 			ScoreManager.EVENT(eScoreEvent.gameWin);
 			FloatingScoreHandler(eScoreEvent.gameWin);
 		} else
 		{
-			print("Game Over. You Lost. :(");
+			gameOverText.text = "Game Over";
+			if (ScoreManager.HIGH_SCORE <= score)
+			{
+				string str = "You got the high score!\nHigh score: " + score;
+				roundResultText.text = str;
+			} else
+			{
+				roundResultText.text = "Your final score was: " + score;
+			}
+			ShowResultsUI(true);
             ScoreManager.EVENT(eScoreEvent.gameLoss);
 			FloatingScoreHandler(eScoreEvent.gameLoss);
         }
 
-		// reload the scene, resetting the game
+		Invoke("ReloadLevel", reloadDelay);
+	}
+
+	void ReloadLevel()
+	{
 		SceneManager.LoadScene("__Prospector");
 	}
 
