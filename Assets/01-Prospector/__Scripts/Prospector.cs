@@ -21,6 +21,7 @@ public class Prospector : MonoBehaviour {
 	public Vector2 fsPosEnd = new Vector2(0.5f, 0.95f);
 	public float reloadDelay = 2f;
 	public Text gameOverText, roundResultText, highScoreText;
+
     public Sprite cardBack;
 	public Sprite cardBackGold;
     public Sprite cardFront;
@@ -85,8 +86,17 @@ public class Prospector : MonoBehaviour {
 		layout.ReadLayout(layoutXML.text);
 
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
-		LayoutGame();
+		flipCards();
+		//LayoutGame();
 	}
+
+	void flipCards()
+    {
+		foreach (CardProspector card in deck.cards)
+        {
+			card.faceUp = true;
+        }
+    }
 
 	List<CardProspector> ConvertListCardsToListCardProspectors(List<Card> lCD)
 	{
@@ -181,7 +191,7 @@ public class Prospector : MonoBehaviour {
 			bool faceUp = true; //assume card will be face-up
 			foreach(CardProspector cover in cd.hiddenBy)
 			{
-				// if either of the covering cards are in the tableau
+				//if either of the covering cards are in the tableau
 				if (cover.state == eCardState.tableau)
 				{
 					faceUp = false; // then this card is face-down
