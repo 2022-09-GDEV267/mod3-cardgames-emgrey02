@@ -87,7 +87,7 @@ public class Prospector : MonoBehaviour {
 
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
 		flipCards();
-		//LayoutGame();
+		LayoutGame();
 	}
 
 	void flipCards()
