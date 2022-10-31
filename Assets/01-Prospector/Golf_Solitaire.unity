@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.825}
   m_AnchorMax: {x: 0.5, y: 0.825}
-  m_AnchoredPosition: {x: 0, y: -362}
+  m_AnchoredPosition: {x: 0, y: -357}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &101717462
@@ -238,7 +238,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.825}
   m_AnchorMax: {x: 0.5, y: 0.825}
-  m_AnchoredPosition: {x: 0, y: -362}
+  m_AnchoredPosition: {x: 0, y: -357}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &588831386
@@ -547,7 +547,7 @@ GameObject:
   - component: {fileID: 1575350876}
   - component: {fileID: 1575350879}
   - component: {fileID: 1575350878}
-  - component: {fileID: 1575350877}
+  - component: {fileID: 1575350880}
   m_Layer: 5
   m_Name: Scoreboard
   m_TagString: Untagged
@@ -572,25 +572,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.95}
   m_AnchorMax: {x: 0.5, y: 0.95}
-  m_AnchoredPosition: {x: 412, y: -436}
+  m_AnchoredPosition: {x: 412, y: -417}
   m_SizeDelta: {x: 200, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1575350877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1575350875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecaea736a2444c34484c7f4ba233530a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabFloatingScore: {fileID: 8980262765592514544, guid: 93ee7e0cdb60cc04a893a620dbfb847f,
-    type: 3}
-  _score: 0
-  _scoreString: 
 --- !u!114 &1575350878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,6 +617,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575350875}
   m_CullTransparentMesh: 1
+--- !u!114 &1575350880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575350875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 924625b8d2eb56e4db229e3fcefacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabFloatingScore: {fileID: 8980262765592514544, guid: 93ee7e0cdb60cc04a893a620dbfb847f,
+    type: 3}
+  _score: 0
+  _scoreString: 
 --- !u!1 &1727744499
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,8 +647,8 @@ GameObject:
   - component: {fileID: 1727744504}
   - component: {fileID: 1727744502}
   - component: {fileID: 1727744508}
-  - component: {fileID: 1727744500}
   - component: {fileID: 1727744509}
+  - component: {fileID: 1727744510}
   m_Layer: 0
   m_Name: _MainCamera
   m_TagString: MainCamera
@@ -656,21 +656,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1727744500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1727744499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19dc2f0e36130904ab06bd235edcc603, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chain: 0
-  scoreRun: 0
-  score: 0
 --- !u!114 &1727744502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,3 +864,19 @@ MonoBehaviour:
   tableau: []
   discardPile: []
   fsRun: {fileID: 0}
+--- !u!114 &1727744510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727744499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 924625b8d2eb56e4db229e3fcefacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabFloatingScore: {fileID: 8980262765592514544, guid: 93ee7e0cdb60cc04a893a620dbfb847f,
+    type: 3}
+  _score: 0
+  _scoreString: 
