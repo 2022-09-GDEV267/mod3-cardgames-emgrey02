@@ -5,6 +5,7 @@ using UnityEngine;
 // an enum to handle all the possible scoring events
 public enum eGolfScoreEvent
 {
+    tableau,
     roundOver,
     gameOver,
 }
@@ -29,7 +30,7 @@ public class GolfScoreManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ERROR: ScoreManager.Awake(): S is already set!");
+            Debug.LogError("ERROR: GolfScoreManager.Awake(): S is already set!");
         }
 
         // check for high score in playerprefs
@@ -39,7 +40,9 @@ public class GolfScoreManager : MonoBehaviour
         }
 
         // add the score from last round, which will be >0 if it was a win
-        roundScore += SCORE_FROM_PREV_ROUND;
+        totalScore += SCORE_FROM_PREV_ROUND;
+
+        roundScore = 35;
 
         // now reset it
         SCORE_FROM_PREV_ROUND = 0;
@@ -53,7 +56,7 @@ public class GolfScoreManager : MonoBehaviour
         }
         catch (System.NullReferenceException nre)
         {
-            Debug.LogError("ScoreManager:EVENT() called while S = null\n" + nre);
+            Debug.LogError("GolfScoreManager:EVENT() called while S = null\n" + nre);
         }
     }
 
@@ -61,8 +64,14 @@ public class GolfScoreManager : MonoBehaviour
     {
         switch (evt)
         {
+            case eGolfScoreEvent.tableau:
+                //update score whenever tableau changes
+                roundScore = Golf.S.tableau.Count;
+                break;
+
             case eGolfScoreEvent.roundOver:
             case eGolfScoreEvent.gameOver:
+                //how many cards are in the tableau = score for this round
                 roundScore = Golf.S.tableau.Count;          
                 break;
 
@@ -72,15 +81,15 @@ public class GolfScoreManager : MonoBehaviour
         {
             case eGolfScoreEvent.roundOver:
                 // if round is over, add score to next round
-                // static fields aren't reset by SceneManager.LoadScene()
+                // static fields aren't reset by GolfSceneManager.LoadScene()
                 SCORE_FROM_PREV_ROUND += roundScore;
                 print("You finished this round with " + roundScore + " points!");
                 break;
 
             case eGolfScoreEvent.gameOver:
-                // if game over, check against high score
+                // if game over, check against best score
                 totalScore = SCORE_FROM_PREV_ROUND;
-                if (BEST_SCORE > totalScore)
+                if (totalScore < BEST_SCORE)
                 {
                     print("You got the high score! High score: " + totalScore);
                     BEST_SCORE = totalScore;

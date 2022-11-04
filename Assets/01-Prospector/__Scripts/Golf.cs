@@ -7,7 +7,6 @@ using System.Collections.Generic;
 
 public class Golf : MonoBehaviour
 {
-
     static public Golf S;
 
     [Header("Set in Inspector")]
@@ -21,7 +20,7 @@ public class Golf : MonoBehaviour
     public Vector2 fsPosMid2 = new Vector2(0.4f, 1.0f);
     public Vector2 fsPosEnd = new Vector2(0.5f, 0.95f);
     public float reloadDelay = 2f;
-    public Text gameOverText, roundResultText, highScoreText;
+    public Text gameOverText, roundResultText, highScoreText, scoreText, roundText;
     public static int ROUND_NUM = 1;
 
     [Header("Set Dynamically")]
@@ -48,9 +47,28 @@ public class Golf : MonoBehaviour
         {
             highScoreText = go.GetComponent<Text>();
         }
-        int highScore = ScoreManager.HIGH_SCORE;
-        string hScore = "High Score: " + Utils.AddCommasToNumber(highScore);
+        int highScore = GolfScoreManager.BEST_SCORE;
+        string hScore = "Best Score: " + Utils.AddCommasToNumber(highScore);
         go.GetComponent<Text>().text = hScore;
+
+        //set up round text
+        go = GameObject.Find("Round");
+        if (go != null)
+        {
+            roundText = go.GetComponent<Text>();
+        }
+        go.GetComponent<Text>().text = "Round: " + ROUND_NUM.ToString() + "/9";
+
+        // set up score UI Text
+        go = GameObject.Find("Score");
+        if (go!= null)
+        {
+            scoreText = go.GetComponent<Text>();
+
+        }
+        int score = GolfScoreManager.ROUND_SCORE;
+        string scoreUI = "Score: " + score;
+        go.GetComponent<Text>().text = scoreUI;
 
         // set up the UI Texts that show at the end of the round
         go = GameObject.Find("GameOver");
@@ -76,7 +94,8 @@ public class Golf : MonoBehaviour
 
     void Start()
     {
-        Scoreboard.S.score = ScoreManager.SCORE;
+        GolfScoreboard.S.roundScore = GolfScoreManager.ROUND_SCORE;
+        GolfScoreboard.S.UpdateScore();
         deck = GetComponent<Deck>();
         deck.InitDeck(deckXML.text);
         Deck.Shuffle(ref deck.cards);
@@ -85,16 +104,7 @@ public class Golf : MonoBehaviour
         golfLayout.ReadLayout(golfLayoutXML.text);
 
         drawPile = ConvertListCardsToListCardGolfs(deck.cards);
-        flipCards();
         LayoutGame();
-    }
-
-    void flipCards()
-    {
-        foreach (CardGolf card in deck.cards)
-        {
-            card.faceUp = true;
-        }
     }
 
     List<CardGolf> ConvertListCardsToListCardGolfs(List<Card> lCD)
@@ -181,7 +191,7 @@ public class Golf : MonoBehaviour
         return null;
     }
 
-    // this turns cards in the Mine face-up or face-down
+    // this turns cards in the tableau face-up or face-down
     void SetTableauFaces()
     {
         foreach (CardGolf cd in tableau)
@@ -292,6 +302,8 @@ public class Golf : MonoBehaviour
                 tableau.Remove(cd);
                 MoveToTarget(cd);
                 SetTableauFaces();
+                GolfScoreManager.EVENT(eGolfScoreEvent.tableau);
+                ScoreHandler(eGolfScoreEvent.tableau);
                 break;
         }
         CheckForRoundOver();
@@ -319,7 +331,7 @@ public class Golf : MonoBehaviour
             }
         }
 
-        // since there are no valid plays, game is over
+        // since there are no valid plays, round is over
         RoundOver();
     }
 
@@ -333,6 +345,7 @@ public class Golf : MonoBehaviour
         roundResultText.text = "Round Score: " + roundScore;
         ShowResultsUI(true);
         GolfScoreManager.EVENT(eGolfScoreEvent.roundOver);
+        ScoreHandler(eGolfScoreEvent.roundOver);
 
         if (ROUND_NUM > 9)
         {
@@ -348,6 +361,8 @@ public class Golf : MonoBehaviour
             }
             ShowResultsUI(true);
             GolfScoreManager.EVENT(eGolfScoreEvent.gameOver);
+            ScoreHandler(eGolfScoreEvent.gameOver);
+            ROUND_NUM = 0;
 
         }
 
@@ -377,9 +392,10 @@ public class Golf : MonoBehaviour
     {
         switch (evt)
         {
-            // roundover
-            case eGolfScoreEvent.roundOver:     // Drawing a card
-                
+            case eGolfScoreEvent.tableau:
+            case eGolfScoreEvent.roundOver:
+            case eGolfScoreEvent.gameOver:
+                GolfScoreboard.S.UpdateScore();
                 break;
         }
     }

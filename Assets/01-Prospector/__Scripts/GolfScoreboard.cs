@@ -1,30 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class GolfScoreboard : MonoBehaviour
 {
     public static GolfScoreboard S; // the singleton for Scoreboard
 
-    [Header("Set in Inspector")]
-    public GameObject prefabFloatingScore;
-
     [Header("Set Dynamically")]
-    [SerializeField] private int _score = 0;
+    [SerializeField] private int _roundScore = 0;
     [SerializeField] private string _scoreString;
 
     // the score property also sets the scoreString
-    public int score
+    public int roundScore
     {
         get
         {
-            return _score;
+            return _roundScore;
         }
         set
         {
-            _score = value;
-            scoreString = _score.ToString("N0");
+            _roundScore = value;
+            scoreString = _roundScore.ToString("N0");
         }
     }
 
@@ -39,6 +38,7 @@ public class GolfScoreboard : MonoBehaviour
             _scoreString = value;
             GetComponent<Text>().text = _scoreString;
         }
+        
     }
 
     void Awake()
@@ -49,7 +49,15 @@ public class GolfScoreboard : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ERROR: Scoreboard.Awake(): S is already set!");
+            Debug.LogError("ERROR: GolfScoreboard.Awake(): S is already set!");
         }
     }
+
+    public void UpdateScore()
+    {
+        roundScore = GolfScoreManager.ROUND_SCORE;
+        Text scoreText = gameObject.GetComponent<Text>();
+        scoreText.text= "Score: " + scoreString;
+    }
 }
+
