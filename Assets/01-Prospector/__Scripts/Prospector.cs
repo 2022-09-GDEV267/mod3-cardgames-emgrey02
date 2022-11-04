@@ -78,25 +78,16 @@ public class Prospector : MonoBehaviour {
 
 	void Start() {
 		Scoreboard.S.score = ScoreManager.SCORE;
-		deck = GetComponent<Deck> ();
+		deck = GetComponent<Deck>();
 		deck.InitDeck(deckXML.text);
 		Deck.Shuffle(ref deck.cards);
 
-		layout = GetComponent<Layout> ();
+		layout = GetComponent<Layout>();
 		layout.ReadLayout(layoutXML.text);
 
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
-		flipCards();
 		LayoutGame();
 	}
-
-	void flipCards()
-    {
-		foreach (CardProspector card in deck.cards)
-        {
-			card.faceUp = true;
-        }
-    }
 
 	List<CardProspector> ConvertListCardsToListCardProspectors(List<Card> lCD)
 	{

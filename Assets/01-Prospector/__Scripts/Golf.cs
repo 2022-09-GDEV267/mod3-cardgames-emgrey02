@@ -61,7 +61,6 @@ public class Golf : MonoBehaviour
             scoreText = go.GetComponent<Text>();
 
         }
-        go.GetComponent<Text>().text = "Score: " + GolfScoreManager.ROUND_SCORE;
 
         // set up totalScore UI
         go = GameObject.Find("TotalScore");
@@ -69,7 +68,7 @@ public class Golf : MonoBehaviour
         {
             totalScoreText = go.GetComponent<Text>();
         }
-        go.GetComponent<Text>().text = "Total Score: " + GolfScoreManager.TOTAL_SCORE;
+        //go.GetComponent<Text>().text = "Total Score: " + GolfScoreManager.TOTAL_SCORE;
 
         // set up the UI Texts that show at the end of the round
         go = GameObject.Find("GameOver");
@@ -357,7 +356,7 @@ public class Golf : MonoBehaviour
             gameOverText.text = "Game Over";
             if (GolfScoreManager.BEST_SCORE > GolfScoreManager.TOTAL_SCORE)
             {
-                string str = "You got the high score!\nHigh score: " + GolfScoreManager.TOTAL_SCORE;
+                string str = "You got the high score! High score: " + GolfScoreManager.TOTAL_SCORE;
                 roundResultText.text = str;
             }
             else

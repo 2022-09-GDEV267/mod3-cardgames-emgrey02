@@ -84,7 +84,7 @@ public class GolfScoreManager : MonoBehaviour
                 // static fields aren't reset by GolfSceneManager.LoadScene()
                 SCORE_FROM_PREV_ROUND = roundScore;
                 TOTAL_SCORE += SCORE_FROM_PREV_ROUND;
-                print("You finished this round with " + roundScore + " points!");
+                //print("You finished this round with " + roundScore + " points!");
                 break;
 
             case eGolfScoreEvent.gameOver:
@@ -92,13 +92,13 @@ public class GolfScoreManager : MonoBehaviour
                 TOTAL_SCORE += roundScore;
                 if (TOTAL_SCORE < BEST_SCORE)
                 {
-                    print("You got the high score! High score: " + TOTAL_SCORE);
+                    //print("You got the high score! High score: " + TOTAL_SCORE);
                     BEST_SCORE = TOTAL_SCORE;
                     PlayerPrefs.SetInt("GolfBestScore", TOTAL_SCORE);
                 }
                 else
                 {
-                    print("Your final score for the game was: " + TOTAL_SCORE + " points");
+                    //print("Your final score for the game was: " + TOTAL_SCORE + " points");
                 }
                 TOTAL_SCORE = 0;
                 break;
