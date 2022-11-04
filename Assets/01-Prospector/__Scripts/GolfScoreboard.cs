@@ -13,6 +13,12 @@ public class GolfScoreboard : MonoBehaviour
     [SerializeField] private int _roundScore = 0;
     [SerializeField] private string _scoreString;
 
+    [SerializeField] private int _totalScore = 0;
+    [SerializeField] private string _totalString;
+
+    public Text Score;
+    public Text TotalScore;
+
     // the score property also sets the scoreString
     public int roundScore
     {
@@ -36,9 +42,36 @@ public class GolfScoreboard : MonoBehaviour
         set
         {
             _scoreString = value;
-            GetComponent<Text>().text = _scoreString;
+            Score.text = "Score: " + _scoreString;
         }
         
+    }
+
+    public int totalScore
+    {
+        get
+        {
+            return _totalScore;
+        }
+        set
+        {
+            _totalScore = value;
+            totalString = _totalScore.ToString("N0");
+        }
+    }
+
+    public string totalString
+    {
+        get
+        {
+            return _totalString;
+        }
+        set
+        {
+            _totalString = value;
+            TotalScore.text = "Total Score: " + _totalString;
+        }
+
     }
 
     void Awake()
@@ -51,13 +84,6 @@ public class GolfScoreboard : MonoBehaviour
         {
             Debug.LogError("ERROR: GolfScoreboard.Awake(): S is already set!");
         }
-    }
-
-    public void UpdateScore()
-    {
-        roundScore = GolfScoreManager.ROUND_SCORE;
-        Text scoreText = gameObject.GetComponent<Text>();
-        scoreText.text= "Score: " + scoreString;
     }
 }
 

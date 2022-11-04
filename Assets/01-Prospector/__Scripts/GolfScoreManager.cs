@@ -15,12 +15,12 @@ public class GolfScoreManager : MonoBehaviour
     static private GolfScoreManager S;
 
     static public int SCORE_FROM_PREV_ROUND = 0;
-    static public int BEST_SCORE = 0;
+    static public int BEST_SCORE = 1000;
+    static public int TOTAL_SCORE = 0;
 
     [Header("Set Dynamically")]
     // fields to track score info
     public int roundScore = 0;
-    public int totalScore = 0;
 
     void Awake()
     {
@@ -40,7 +40,7 @@ public class GolfScoreManager : MonoBehaviour
         }
 
         // add the score from last round, which will be >0 if it was a win
-        totalScore += SCORE_FROM_PREV_ROUND;
+        //TOTAL_SCORE += SCORE_FROM_PREV_ROUND;
 
         roundScore = 35;
 
@@ -82,30 +82,31 @@ public class GolfScoreManager : MonoBehaviour
             case eGolfScoreEvent.roundOver:
                 // if round is over, add score to next round
                 // static fields aren't reset by GolfSceneManager.LoadScene()
-                SCORE_FROM_PREV_ROUND += roundScore;
+                SCORE_FROM_PREV_ROUND = roundScore;
+                TOTAL_SCORE += SCORE_FROM_PREV_ROUND;
                 print("You finished this round with " + roundScore + " points!");
                 break;
 
             case eGolfScoreEvent.gameOver:
                 // if game over, check against best score
-                totalScore = SCORE_FROM_PREV_ROUND;
-                if (totalScore < BEST_SCORE)
+                TOTAL_SCORE += roundScore;
+                if (TOTAL_SCORE < BEST_SCORE)
                 {
-                    print("You got the high score! High score: " + totalScore);
-                    BEST_SCORE = totalScore;
-                    PlayerPrefs.SetInt("GolfBestScore", totalScore);
+                    print("You got the high score! High score: " + TOTAL_SCORE);
+                    BEST_SCORE = TOTAL_SCORE;
+                    PlayerPrefs.SetInt("GolfBestScore", TOTAL_SCORE);
                 }
                 else
                 {
-                    print("Your final score for the game was: " + totalScore + " points");
+                    print("Your final score for the game was: " + TOTAL_SCORE + " points");
                 }
+                TOTAL_SCORE = 0;
                 break;
 
             default:
-                print("score: " + totalScore);
+                print("score: " + TOTAL_SCORE);
                 break;
         }
     }
     static public int ROUND_SCORE { get { return S.roundScore; } }
-    static public int TOTAL_SCORE { get { return S.totalScore; } }
 }
