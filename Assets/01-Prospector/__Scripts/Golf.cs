@@ -366,7 +366,7 @@ public class Golf : MonoBehaviour
             ShowResultsUI(true);
             GolfScoreManager.EVENT(eGolfScoreEvent.gameOver);
             ScoreHandler(eGolfScoreEvent.gameOver);
-            ROUND_NUM = 0;
+            ROUND_NUM = 1;
         }
 
         Invoke("ReloadLevel", reloadDelay);
