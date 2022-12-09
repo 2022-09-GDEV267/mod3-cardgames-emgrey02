@@ -15,10 +15,7 @@ public class Deck : MonoBehaviour {
 	public Sprite[] rankSprites;
 	
 	public Sprite cardBack;
-	public Sprite cardBackGold;
 	public Sprite cardFront;
-	public Sprite cardFrontGold;
-	
 	
 	// Prefabs
 	public GameObject prefabSprite;
@@ -120,7 +117,7 @@ public class Deck : MonoBehaviour {
 			}// if xPips
 			
 			// if it's a face card, map the proper sprite
-			// foramt is ##A, where ## in 11, 12, 13 and A is letter indicating suit
+			// format is ##A, where ## in 11, 12, 13 and A is letter indicating suit
 			if (xCardDefs[i].HasAtt("face")){
 				cDef.face = xCardDefs[i].att ("face");
 			}
@@ -229,7 +226,6 @@ public class Deck : MonoBehaviour {
 			if (card.def.face != "") {
 				tGO = Instantiate(prefabSprite) as GameObject;
 				tSR = tGO.GetComponent<SpriteRenderer>();
-				
 				tS = GetFace(card.def.face+card.suit);
 				tSR.sprite = tS;
 				tSR.sortingOrder = 1;
